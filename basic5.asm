@@ -9,8 +9,8 @@ _start:
 	mov	ecx,	msg
 	mov	edx,	len
 	call	write
-	mov	eax,	1
-	mov	ebx,	0
+	mov	eax,	1	; sys_exit
+	mov	ebx,	0	; exit status is 0
 	int	0x80
 
 write:
@@ -20,8 +20,8 @@ write:
 
 	mov	ebp,	esp
 
-	mov	eax,	4
-	mov	ebx,	1
+	mov	eax,	4	; sys_write
+	mov	ebx,	1	; stdout
 	; ecx is required to already have the bytes to write
 	; edx is required to already have the amount of bytes to write
 	int	0x80
