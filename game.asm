@@ -11,11 +11,14 @@ section	.data
 	mingenL:		equ	$ - mingen
 	maxgen:		db	"Maximum generated number? "
 	maxgenL:		equ	$ - maxgen
+
+	maxe:			db	"Maximum must be higher than minimum!", 0x0a
+	maxeL:		equ	$ - maxe
 	
 	; not sure if these are being defined(?) correctly
-	min:			dw	0
-	max:			dw	0
-	buf:			times	1	dw	0	; buf is allocated 1 byte?
+	min:			dd	0
+	max:			dd	0
+	buf:			times	1	dd	0	; buf is allocated 4 byte?
 	; buf:	times	100	dw	0		; buf is allocated 100 bytes?
 
 section	.text
@@ -44,10 +47,12 @@ _start:
 
 	; having issues
 	mov	[min],	dword	buf
-	mov	ecx,	min
-	mov	edx,	2
-	call	Write
+	jmp	.maxgen
 
+.regenmax:
+	mov	ecx,	maxe
+	mov	edx,	maxeL
+	call	Write
 
 .maxgen:
 	mov	ecx,	maxgen
@@ -57,10 +62,14 @@ _start:
 
 	; having issues
 	mov	[max],	dword buf
-	mov	ecx,	max
-	mov	edx,	2
+	mov	ecx,		max
+	mov	edx,		4
 	call	Write
 
+;	cmp	[min],	dword max
+;	jge	.regenmax
+	mov	eax,	1	; sys_exit
+	mov	ebx,	0	; exit status 0
 	int	0x80
 	
 
@@ -85,6 +94,8 @@ Read:
 	mov	ecx,	buf	; destination
 	mov	edx,	4	; max length
 	int	0x80
+
+	call	Write
 
 	cmp	eax,	edx	; all bytes read?
 
