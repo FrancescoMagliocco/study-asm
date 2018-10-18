@@ -1,12 +1,9 @@
-; vim: ft=nasm st=6 sts=6 sw=6
+; vim: ft=nasm st=8 sts=8 sw=8
 
 section	.data
 	greeting:		db	"Number Guessing Game", 0x0a
 	greetingL:		equ	$ - greeting
 
-	; not sure if correct term is being used
-;	byteamount:		db	"Integer lengh? [1, 2, 4] "
-;	byteamountL:	equ	$ - byteamount
 	mingen:		db	"Minimum generated number? "
 	mingenL:		equ	$ - mingen
 	maxgen:		db	"Maximum generated number? "
@@ -43,10 +40,10 @@ _start:
 	mov	ecx,	mingen
 	mov	edx,	mingenL
 	call	Write
+	
+	mov	edi,	min	; moves address of min to edi?
 	call	Read
-
-	; having issues
-	mov	[min],	dword	buf
+	
 	jmp	.maxgen
 
 .regenmax:
@@ -58,16 +55,18 @@ _start:
 	mov	ecx,	maxgen
 	mov	edx,	maxgenL
 	call	Write
+	
+	mov	edi,	max	; moves address of max to edi?
 	call	Read
 
-	; having issues
-	mov	[max],	dword buf
-	mov	ecx,		max
-	mov	edx,		4
-	call	Write
+	mov	ecx,	min
+	mov	edx,	4
+	call Write
+	
+	mov	ecx,	max
+	; edx was previously set
+	call Write
 
-;	cmp	[min],	dword max
-;	jge	.regenmax
 	mov	eax,	1	; sys_exit
 	mov	ebx,	0	; exit status 0
 	int	0x80
@@ -84,22 +83,27 @@ Write:
 	pop	ebx
 	pop	eax
 	ret
-	
+
 Read:
 	push	eax
 	push	ebx
 
 	mov	eax,	3	; sys_read
 	mov	ebx,	0	; stdin
+	
+	mov	esi,	buf	; either address of min, or max
+	movsw			; moves address of content at edi to to address of
+				;	content at esi (buf)
+	
 	mov	ecx,	buf	; destination
+					; either address of min, or max?
 	mov	edx,	4	; max length
 	int	0x80
 
-	call	Write
+;	call	Write
 
 	cmp	eax,	edx	; all bytes read?
 
-	; not jumping to .readsuc	
 	; jb (jump if below) is used for unsigned
 	jb	.readsuc	; jump if below
 
