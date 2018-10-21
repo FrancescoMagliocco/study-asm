@@ -1,6 +1,33 @@
+section .data
+	num:	dd 0
 section	.text
 	global	_start
 _start:
+	
+
+; test
+
+	mov	ecx,	123
+	; 123 / 10 = 12 % 3
+	; 12 / 10 = 1 % 2
+	; 1 / 10 = 0
+	add	ecx,	0x30
+	mov	[num],	ecx
+
+	mov	ecx,	num
+
+	mov	eax,	4
+	mov	ebx,	2
+	mov	edx,	1
+	int	0x80
+
+	mov	eax,	1
+	mov	ebx,	0
+	int	0x80
+
+
+
+
 	rdrand	eax				; gen ran num in eax
 
 	mov	ebp,		esp		; store cur esp in ebp
