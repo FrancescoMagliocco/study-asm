@@ -11,7 +11,7 @@ _start:
 		cmp	eax,	0x0
 		jz	.done
 
-		mov	edx,	0x0
+		mov	edx,	0x0	; zero edx
 		div	ebx
 		add	edx,	0x30
 
