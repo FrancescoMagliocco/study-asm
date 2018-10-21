@@ -1,55 +1,34 @@
 section	.text
 	global	_start
 _start:
-;	push	ecx
-;	push	ebx
+	sub	esp,	0xa
+	mov	eax,	123
+	mov	ebx,	0xa
 
-;	mov	ebp,		esp
-	
-	sub	esp,		0xa	; allocate 10 bytes
-	mov	eax,		123	;
-	
-	mov	ecx,		10	; counter
-.loop:
-	mov	edx,		0x0	; zero edx
-	mov	ebx,		0xa	; divisor
-	cmp	eax,		0xa	; eax < 10
-	jb	.last
+	mov	ecx,	0xa
 
-	div	ebx
-	mov	ebx,		[i]
-	
-	add	edx,		0x30	; edx + 48 to get ascii digit
-	mov	[esp+ebx],	edx	; put ascii digit in esp at cur index
-	dec	dword		[i]	; go back an index
+	.loop:
+		cmp	eax,	0x0
+		jz	.done
 
-	loop	.loop
-	jmp	.done
-.last:
-	add	eax,		0x30	; eax + 48 to get ascii digit
-	mov	ebx,		[i]
-	mov	[esp+ebx],	eax	; put ascii digit in esp at cur index
+		mov	edx,	0x0
+		div	ebx
+		add	edx,	0x30
 
+		mov	[esp+ecx],	dl
+		loop	.loop
 .done:
-	mov	edx,		10	; esp was allocated 10 bytes
-	sub	edx,		ecx	; amount of bytes used
-	add	esp,		ecx	; de-allocate(?) the unused bytes
-	mov	ecx,		esp	; bytes to write
-	mov	eax,		4	; sys_write
-	mov	ebx,		2	; stdout
-	int	0x80			; syscall
-
-	mov	eax,		1	; sys_exit
-	mov	ebx,		0	; exit code 0
-	int	0x80			; syscall
-
-
-;	mov	esp,		ebp
-
-;	pop	ebx
-;	pop	ecx
-	;ret
-
+	mov	edx,	0xa
 	
-section	.data
-	i:	dd	10
+	sub	edx,	ecx	; amount of bytes to write
+	
+	add	esp,	ecx	; remove extra allocated bytes(?)
+
+	mov	eax,	4	; sys_write
+	mov	ebx,	2	; stdout
+	mov	ecx,	esp	; bytes to write
+	int	0x80
+
+	mov	eax,	1	; sys_exit
+	mov	ebx,	0	; exit code 0
+	int	0x80
