@@ -5,7 +5,7 @@ _start:
 	mov	eax,	123
 	mov	ebx,	0xa
 
-	mov	ecx,	0xa
+	mov	ecx,	0xa	; counter
 
 	.loop:
 		cmp	eax,	0x0
